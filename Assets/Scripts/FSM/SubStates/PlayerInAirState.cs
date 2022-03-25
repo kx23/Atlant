@@ -12,6 +12,7 @@ namespace Atlant
         private bool _oldIsTouchingWall;
         private bool _oldIsTouchingWallBack;
         private bool _isTouchingWallBack;
+        private bool _isTouchingLedge;
         private bool _jumpInput;
         private bool _jumpInputStop;
         private bool _grabInput;
@@ -34,6 +35,12 @@ namespace Atlant
             _isGrounded = _characterController.CheckIfGrounded();
             _isTouchingWall = _characterController.CheckIfTouchingWall();
             _isTouchingWallBack = _characterController.CheckIfTouchingWallBack();
+            _isTouchingLedge = _characterController.CheckIfTouchingLedge();
+
+            if (_isTouchingWall && !_isTouchingLedge)
+            {
+                _characterController.ledgeClimbState.SetDetectedPos(_characterController.transform.position);
+            }
 
             if (!_wallCoyoteTime && !_isTouchingWall && !_isTouchingWallBack && (_oldIsTouchingWall || _oldIsTouchingWallBack))
             {
@@ -49,6 +56,10 @@ namespace Atlant
         public override void Exit()
         {
             base.Exit();
+            _oldIsTouchingWall = false;
+            _oldIsTouchingWallBack = false;
+            _isTouchingWall = false;
+            _isTouchingWallBack = false;
         }
 
         public override void UpdateLogic()
@@ -69,7 +80,11 @@ namespace Atlant
             {
                 _stateMachine.ChangeState(_characterController.landState);
             }
-            else if (_jumpInput && (_isTouchingWall||_isTouchingWallBack||_wallCoyoteTime))
+            else if (_isTouchingWall && !_isTouchingLedge)
+            {
+                _stateMachine.ChangeState(_characterController.ledgeClimbState);
+            }
+            else if (_jumpInput && (_isTouchingWall || _isTouchingWallBack || _wallCoyoteTime))
             {
                 StopWallCoyoteTime();
                 _isTouchingWall = _characterController.CheckIfTouchingWall();
@@ -78,7 +93,7 @@ namespace Atlant
             }
             else if (_jumpInput && _characterController.jumpState.CanJump())
             {
-                
+
                 _stateMachine.ChangeState(_characterController.jumpState);
             }
             else if (_isTouchingWall && _grabInput)

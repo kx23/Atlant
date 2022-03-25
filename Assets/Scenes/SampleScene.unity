@@ -336,6 +336,7 @@ MonoBehaviour:
   _playerData: {fileID: 11400000, guid: deb537ae68c16f04c8779f88ec7843e6, type: 2}
   _groundChecker: {fileID: 497874141}
   _wallChecker: {fileID: 556204291}
+  _ledgeChecker: {fileID: 1988661000}
 --- !u!4 &173478124
 Transform:
   m_ObjectHideFlags: 0
@@ -350,6 +351,7 @@ Transform:
   - {fileID: 1057561527}
   - {fileID: 497874141}
   - {fileID: 556204291}
+  - {fileID: 1988661000}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -625,7 +627,7 @@ MonoBehaviour:
   m_Follow: {fileID: 173478124}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 3
+    OrthographicSize: 1.63
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -771,7 +773,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 3
+  orthographic size: 1.63
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -2153,3 +2155,33 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 54.079}
+--- !u!1 &1988660999
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1988661000}
+  m_Layer: 9
+  m_Name: LedgeChecker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1988661000
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988660999}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 173478124}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

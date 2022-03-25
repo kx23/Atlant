@@ -22,8 +22,10 @@ MonoBehaviour:
   variableJumpHeightMultiplayer: 0.5
   wallSlideVelocity: 1
   wallClimbVelocity: 2
+  startOffset: {x: 0.25, y: 0.13}
+  stopOffset: {x: 0, y: 0}
   groundCheckRadius: 0.1
-  wallCheckDistance: 0.3
+  wallCheckDistance: 0.4
   groundLayer:
     serializedVersion: 2
     m_Bits: 1024

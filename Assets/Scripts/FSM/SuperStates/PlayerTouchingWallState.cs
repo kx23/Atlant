@@ -12,6 +12,7 @@ namespace Atlant
         protected bool _jumpInput;
         protected bool _isGrounded;
         protected bool _isTouchingWall;
+        protected bool _isTouchingLedge;
 
 
         public PlayerTouchingWallState(CharacterController characterController, StateMachine stateMachine, PlayerData playerData, string animBoolName) : base(characterController, stateMachine, playerData, animBoolName)
@@ -33,7 +34,13 @@ namespace Atlant
             base.DoChecks();
             _isGrounded = _characterController.CheckIfGrounded();
             _isTouchingWall = _characterController.CheckIfTouchingWall();
-           
+            _isTouchingLedge= _characterController.CheckIfTouchingLedge();
+
+            if (_isTouchingWall && !_isTouchingLedge)
+            {
+                _characterController.ledgeClimbState.SetDetectedPos(_characterController.transform.position);
+            }
+
         }
 
         public override void Enter()
@@ -69,6 +76,10 @@ namespace Atlant
             else if (!_isTouchingWall || (_xInput != _characterController.facingDirection&&!_grabInput))
             {
                 _stateMachine.ChangeState(_characterController.inAirState);
+            }
+            else if (_isTouchingWall && !_isTouchingLedge)
+            {
+                _stateMachine.ChangeState(_characterController.ledgeClimbState);
             }
         }
 

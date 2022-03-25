@@ -17,8 +17,8 @@ namespace Atlant
         public int amountOfJumps = 1;
 
         [Header("Wall Jump state")]
-        public float wallJumpVelocity=20;
-        public Vector2 wallJumpAngle=new Vector2(1,2);
+        public float wallJumpVelocity = 20;
+        public Vector2 wallJumpAngle = new Vector2(1, 2);
         public float wallJumpTime = 0.3f;
 
         [Header("In Air state")]
@@ -30,6 +30,10 @@ namespace Atlant
 
         [Header("Wall Climb state")]
         public float wallClimbVelocity = 2f;
+
+        [Header("Ledge ClimbState")]
+        public Vector2 startOffset;
+        public Vector2 stopOffset;
 
         [Header("Check variables")]
         public float groundCheckRadius = 0.1f;

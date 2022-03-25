@@ -17,6 +17,7 @@ namespace Atlant
         public PlayerWallSlideState wallSlideState { get; private set; }
         public PlayerWallGrabState wallGrabState { get; private set; }
         public PlayerWallJumpState wallJumpState { get; private set; }
+        public PlayerLedgeClimbState ledgeClimbState { get; private set; }
 
 
 
@@ -35,6 +36,8 @@ namespace Atlant
         private Transform _groundChecker;
         [SerializeField]
         private Transform _wallChecker;
+        [SerializeField]
+        private Transform _ledgeChecker;
 
 
         #endregion
@@ -63,6 +66,9 @@ namespace Atlant
             wallGrabState = new PlayerWallGrabState(this, stateMachine, _playerData, "wallGrab");
 
             wallJumpState = new PlayerWallJumpState(this, stateMachine, _playerData, "inAir");
+
+            ledgeClimbState = new PlayerLedgeClimbState(this, stateMachine, _playerData, "ledgeClimbState");
+
             rb = GetComponent<Rigidbody2D>();
         }
 
@@ -85,6 +91,12 @@ namespace Atlant
         #endregion
 
         #region Set Functions
+        public void SetVelocityZero()
+        {
+            rb.velocity = Vector2.zero;
+            currentVelocity = Vector2.zero;
+        }
+
         public void SetVelocity(float velocity, Vector2 angle, int direction)
         {
             angle.Normalize();
@@ -127,6 +139,12 @@ namespace Atlant
         {
             return Physics2D.Raycast(_wallChecker.position, Vector2.right * facingDirection, _playerData.wallCheckDistance, _playerData.groundLayer);
         }
+
+        public bool CheckIfTouchingLedge()
+        {
+            return Physics2D.Raycast(_ledgeChecker.position, Vector2.right * facingDirection, _playerData.wallCheckDistance, _playerData.groundLayer);
+        }
+
         public bool CheckIfTouchingWallBack()
         {
             return Physics2D.Raycast(_wallChecker.position, Vector2.right * -facingDirection, _playerData.wallCheckDistance, _playerData.groundLayer);
@@ -139,6 +157,16 @@ namespace Atlant
         {
             facingDirection *= -1;
             transform.Rotate(0.0f, 180f, 0f);
+        }
+        public Vector2 DetermineCornerPosition()
+        {
+            RaycastHit2D xHit = Physics2D.Raycast(_wallChecker.position, Vector2.right * facingDirection, _playerData.wallCheckDistance, _playerData.groundLayer);
+            float xDist = xHit.distance;
+            workspace.Set(xDist * facingDirection, 0f);
+            RaycastHit2D yHit = Physics2D.Raycast(_ledgeChecker.position+(Vector3)(workspace), Vector2.down, _ledgeChecker.position.y-_wallChecker.position.y, _playerData.groundLayer);
+            float yDist = yHit.distance;
+            workspace.Set(_wallChecker.position.x + (xDist * facingDirection), _ledgeChecker.position.y - yDist);
+            return workspace;
         }
 
         //private void AnimationTrigger() => stateMachine.currentState.AnimationTrigger();
