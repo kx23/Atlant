@@ -6,19 +6,25 @@ namespace Atlant
 {
     public class PlayerInAirState : BaseState
     {
+        //Input
+        private bool _grabInput;
         private int _xInput;
+        private bool _jumpInput;
+        private bool _jumpInputStop;
+        private bool _dashInput;
+
+        //Check
         private bool _isGrounded;
         private bool _isTouchingWall;
         private bool _oldIsTouchingWall;
         private bool _oldIsTouchingWallBack;
         private bool _isTouchingWallBack;
         private bool _isTouchingLedge;
-        private bool _jumpInput;
-        private bool _jumpInputStop;
-        private bool _grabInput;
+        private bool _isJumping;
+
+        //Other
         private bool _coyoteTime;
         private bool _wallCoyoteTime;
-        private bool _isJumping;
         private float _startWallCoyoteTime;
 
 
@@ -73,6 +79,8 @@ namespace Atlant
             _jumpInput = _characterController.inputHandler.jumpInput;
             _jumpInputStop = _characterController.inputHandler.jumpInputStop;
             _grabInput = _characterController.inputHandler.grabInput;
+            _dashInput = _characterController.inputHandler.dashInput;
+           
 
             CheckJumpMultiplayer();
 
@@ -80,7 +88,7 @@ namespace Atlant
             {
                 _stateMachine.ChangeState(_characterController.landState);
             }
-            else if (_isTouchingWall && !_isTouchingLedge)
+            else if (_isTouchingWall && !_isTouchingLedge && !_isGrounded)
             {
                 _stateMachine.ChangeState(_characterController.ledgeClimbState);
             }
@@ -96,13 +104,17 @@ namespace Atlant
 
                 _stateMachine.ChangeState(_characterController.jumpState);
             }
-            else if (_isTouchingWall && _grabInput)
+            else if (_isTouchingWall && _grabInput && _isTouchingLedge)
             {
                 _stateMachine.ChangeState(_characterController.wallGrabState);
             }
             else if (_isTouchingWall && _xInput == _characterController.facingDirection && _characterController.currentVelocity.y < 0)
             {
                 _stateMachine.ChangeState(_characterController.wallSlideState);
+            }
+            else if (_dashInput && _characterController.dashState.CheckIfCanDash())
+            {
+                _stateMachine.ChangeState(_characterController.dashState);
             }
             else
             {
@@ -125,7 +137,7 @@ namespace Atlant
             {
                 if (_jumpInputStop)
                 {
-                    _characterController.SetVelocityY(_characterController.currentVelocity.y * _playerData.variableJumpHeightMultiplayer);
+                    _characterController.SetVelocityY(_characterController.currentVelocity.y * _playerData.variableJumpHeightMultiplier);
                     _isJumping = false;
                 }
                 else if (_characterController.currentVelocity.y <= 0f)

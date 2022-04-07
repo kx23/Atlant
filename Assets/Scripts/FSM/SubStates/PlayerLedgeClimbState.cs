@@ -13,6 +13,7 @@ namespace Atlant
 
         private bool _isHanging;
         private bool _isClimbing;
+        private bool _jumpInput;
 
         private int _xInput;
         private int _yInput;
@@ -73,6 +74,7 @@ namespace Atlant
 
                 _xInput = _characterController.inputHandler.normInputX;
                 _yInput = _characterController.inputHandler.normInputY;
+                _jumpInput = _characterController.inputHandler.jumpInput;
 
                 _characterController.SetVelocityZero();
                 _characterController.transform.position = _startPos;
@@ -85,6 +87,11 @@ namespace Atlant
                 else if (_yInput == -1 && _isHanging && !_isClimbing)
                 {
                     _stateMachine.ChangeState(_characterController.inAirState);
+                }
+                else if (_jumpInput && !_isClimbing)
+                {
+                    _characterController.wallJumpState.DetermineWallJumpDirection(true);
+                    _stateMachine.ChangeState(_characterController.wallJumpState);
                 }
             }
 

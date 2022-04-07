@@ -23,7 +23,7 @@ namespace Atlant
 
         [Header("In Air state")]
         public float coyoteTime = 0.2f;
-        public float variableJumpHeightMultiplayer = 0.5f;
+        public float variableJumpHeightMultiplier = 0.5f;
 
         [Header("Wall Slide state")]
         public float wallSlideVelocity = 3f;
@@ -31,9 +31,20 @@ namespace Atlant
         [Header("Wall Climb state")]
         public float wallClimbVelocity = 2f;
 
-        [Header("Ledge ClimbState")]
+        [Header("Ledge Climb State")]
         public Vector2 startOffset;
         public Vector2 stopOffset;
+
+        [Header("Dash State")]
+        public float dashCooldown = 0.5f;
+        public float maxHoldTime = 1f;
+        public float holdTimeScale = 0.15f;
+        public float dashTime = 0.2f;
+        public float dashVelocity = 15f;
+        public float drag = 10f;
+        public float dashEndYMultiplier = 0.2f;
+        public float distBetweenAfterImages = 0.1f;
+
 
         [Header("Check variables")]
         public float groundCheckRadius = 0.1f;

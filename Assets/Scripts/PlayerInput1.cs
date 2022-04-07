@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Player))]
-public class PlayerInput : MonoBehaviour
+public class PlayerInput1 : MonoBehaviour
 {
     Player player;
     // Start is called before the first frame update

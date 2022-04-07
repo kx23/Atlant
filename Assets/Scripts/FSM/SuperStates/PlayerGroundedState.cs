@@ -11,6 +11,8 @@ namespace Atlant
         private bool _isGrounded;
         private bool _jumpInput;
         private bool _isTouchingWall;
+        private bool _isTouchingLedge;
+        private bool _dashInput;
 
 
 
@@ -23,6 +25,7 @@ namespace Atlant
             base.DoChecks();
             _isGrounded = _characterController.CheckIfGrounded();
             _isTouchingWall = _characterController.CheckIfTouchingWall();
+            _isTouchingLedge = _characterController.CheckIfTouchingLedge();
         }
 
         public override void Enter()
@@ -30,6 +33,7 @@ namespace Atlant
             base.Enter();
 
             _characterController.jumpState.ResetAmountOfJumpsLeft();
+            _characterController.dashState.ResetCanDash();
         }
 
         public override void Exit()
@@ -44,6 +48,7 @@ namespace Atlant
             _xInput = _characterController.inputHandler.normInputX;
             _jumpInput = _characterController.inputHandler.jumpInput;
             _grabInput= _characterController.inputHandler.grabInput;
+            _dashInput= _characterController.inputHandler.dashInput;
 
             if (_jumpInput && _characterController.jumpState.CanJump())
             {
@@ -53,9 +58,14 @@ namespace Atlant
             {
                 _characterController.inAirState.StartCoyoteTime();
                 _stateMachine.ChangeState(_characterController.inAirState);
-            }else if(_isTouchingWall&&_grabInput)
+            }
+            else if(_isTouchingWall&&_grabInput && _isTouchingLedge)
             {
                 _stateMachine.ChangeState(_characterController.wallGrabState);
+            }
+            else if (_dashInput && _characterController.dashState.CheckIfCanDash())
+            {
+                _stateMachine.ChangeState(_characterController.dashState);
             }
         }
 

@@ -18,6 +18,7 @@ namespace Atlant
         public PlayerWallGrabState wallGrabState { get; private set; }
         public PlayerWallJumpState wallJumpState { get; private set; }
         public PlayerLedgeClimbState ledgeClimbState { get; private set; }
+        public PlayerDashState dashState { get; private set; }
 
 
 
@@ -29,6 +30,9 @@ namespace Atlant
         public Animator animator { get; private set; }
         public PlayerInputHandler inputHandler { get; private set; }
         public Rigidbody2D rb { get; private set; }
+        public Transform dashDirectionIndicator { get; private set; }
+
+        public PlayerAfterImagePool afterImagePool { get; private set; }
         #endregion
 
         #region Check Transform Variables
@@ -68,13 +72,16 @@ namespace Atlant
             wallJumpState = new PlayerWallJumpState(this, stateMachine, _playerData, "inAir");
 
             ledgeClimbState = new PlayerLedgeClimbState(this, stateMachine, _playerData, "ledgeClimbState");
+            dashState = new PlayerDashState(this, stateMachine, _playerData, "inAir");
 
             rb = GetComponent<Rigidbody2D>();
+            
         }
 
         private void Start()
         {
             stateMachine.Initialize(idleState);
+            dashDirectionIndicator = transform.Find("DashDirectionIndicator");
         }
 
         private void Update()
@@ -101,6 +108,12 @@ namespace Atlant
         {
             angle.Normalize();
             workspace.Set(angle.x * velocity * direction, angle.y * velocity);
+            rb.velocity = workspace;
+            currentVelocity = workspace;
+        }        
+        public void SetVelocity(float velocity, Vector2 direction)
+        {
+            workspace = direction * velocity;
             rb.velocity = workspace;
             currentVelocity = workspace;
         }
