@@ -14,6 +14,7 @@ namespace Atlant
         private bool _isHanging;
         private bool _isClimbing;
         private bool _jumpInput;
+        private bool _isTouchingCeiling;
 
         private int _xInput;
         private int _yInput;
@@ -61,13 +62,27 @@ namespace Atlant
 
         public void SetDetectedPos(Vector2 pos) => _detectedPos = pos;
 
+        private void CheckForSpace()
+        {
+            _isTouchingCeiling = Physics2D.Raycast(_cornerPos+(Vector2.up*0.015f)+(Vector2.right*_characterController.facingDirection * 0.015f),Vector2.up,_playerData.standColliderHeight,_playerData.groundLayer);
+            _characterController.animator.SetBool("isTouchingCeiling", _isTouchingCeiling);
+        }
+
         public override void UpdateLogic()
         {
             base.UpdateLogic();
 
             if (_isAnmationFinished)
             {
-                _stateMachine.ChangeState(_characterController.idleState);
+                if (_isTouchingCeiling)
+                {
+                    _stateMachine.ChangeState(_characterController.crouchIdleState);
+                }
+                else
+                {
+                    _stateMachine.ChangeState(_characterController.idleState);
+                }
+                
             }
             else
             {
@@ -81,6 +96,8 @@ namespace Atlant
 
                 if (_xInput == _characterController.facingDirection && _isHanging && !_isClimbing)
                 {
+                    CheckForSpace();
+                    //_characterController.animator.SetBool("isTouchingCeiling", _isTouchingCeiling);
                     _isClimbing = true;
                     _characterController.animator.SetBool("ledgeClimb", true);
                 }

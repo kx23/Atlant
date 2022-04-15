@@ -30,11 +30,18 @@ namespace Atlant
         public override void UpdateLogic()
         {
             base.UpdateLogic();
-
-            if (_xInput != 0f&&!_isExitingState)
+            if (!_isExitingState)
             {
-                _stateMachine.ChangeState(_characterController.moveState);
+                if (_xInput != 0f)
+                {
+                    _stateMachine.ChangeState(_characterController.moveState);
+                }
+                else if (_yInput == -1)
+                {
+                    _stateMachine.ChangeState(_characterController.crouchIdleState);
+                }
             }
+
         }
 
         public override void UpdatePhysics()

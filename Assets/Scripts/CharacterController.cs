@@ -19,6 +19,8 @@ namespace Atlant
         public PlayerWallJumpState wallJumpState { get; private set; }
         public PlayerLedgeClimbState ledgeClimbState { get; private set; }
         public PlayerDashState dashState { get; private set; }
+        public PlayerCrouchIdleState crouchIdleState { get; private set; }
+        public PlayerCrouchMoveState crouchMoveState { get; private set; }
 
 
 
@@ -31,8 +33,8 @@ namespace Atlant
         public PlayerInputHandler inputHandler { get; private set; }
         public Rigidbody2D rb { get; private set; }
         public Transform dashDirectionIndicator { get; private set; }
-
         public PlayerAfterImagePool afterImagePool { get; private set; }
+        public BoxCollider2D movementCollider { get; private set; }
         #endregion
 
         #region Check Transform Variables
@@ -42,6 +44,8 @@ namespace Atlant
         private Transform _wallChecker;
         [SerializeField]
         private Transform _ledgeChecker;
+        [SerializeField]
+        private Transform _ceilingChecker;
 
 
         #endregion
@@ -74,6 +78,9 @@ namespace Atlant
             ledgeClimbState = new PlayerLedgeClimbState(this, stateMachine, _playerData, "ledgeClimbState");
             dashState = new PlayerDashState(this, stateMachine, _playerData, "inAir");
 
+            crouchIdleState = new PlayerCrouchIdleState(this, stateMachine, _playerData, "crouchIdle");
+            crouchMoveState = new PlayerCrouchMoveState(this, stateMachine, _playerData, "crouchMove");
+
             rb = GetComponent<Rigidbody2D>();
             
         }
@@ -82,6 +89,7 @@ namespace Atlant
         {
             stateMachine.Initialize(idleState);
             dashDirectionIndicator = transform.Find("DashDirectionIndicator");
+            movementCollider = GetComponent<BoxCollider2D>();
         }
 
         private void Update()
@@ -142,6 +150,12 @@ namespace Atlant
             }
         }
 
+        public bool CheckForCeiling()
+        {
+            //Debug.DrawLine(_groundChecker.position, _groundChecker.position+ (Vector3.down*_playerData.groundCheckRadius),Color.red, 1f);
+            return Physics2D.OverlapCircle(_ceilingChecker.position, _playerData.groundCheckRadius, _playerData.groundLayer);
+        }
+
         public bool CheckIfGrounded()
         {
             //Debug.DrawLine(_groundChecker.position, _groundChecker.position+ (Vector3.down*_playerData.groundCheckRadius),Color.red, 1f);
@@ -166,6 +180,17 @@ namespace Atlant
         #endregion
 
         #region Other Functions
+
+        public void SetColliderHeight(float height)
+        {
+            Vector2 center = movementCollider.offset;
+            workspace.Set(movementCollider.size.x, height);
+
+            center.y += (height - movementCollider.size.y) / 2;
+
+            movementCollider.size = workspace;
+            movementCollider.offset = center;
+        }
         private void Flip()
         {
             facingDirection *= -1;
@@ -173,14 +198,16 @@ namespace Atlant
         }
         public Vector2 DetermineCornerPosition()
         {
+            //исправить
             RaycastHit2D xHit = Physics2D.Raycast(_wallChecker.position, Vector2.right * facingDirection, _playerData.wallCheckDistance, _playerData.groundLayer);
             float xDist = xHit.distance;
-            workspace.Set(xDist * facingDirection, 0f);
-            RaycastHit2D yHit = Physics2D.Raycast(_ledgeChecker.position+(Vector3)(workspace), Vector2.down, _ledgeChecker.position.y-_wallChecker.position.y, _playerData.groundLayer);
+            workspace.Set((xDist+0.015f) * facingDirection, 0f);
+            RaycastHit2D yHit = Physics2D.Raycast(_ledgeChecker.position+(Vector3)(workspace), Vector2.down, _ledgeChecker.position.y-_wallChecker.position.y+0.015f, _playerData.groundLayer);
             float yDist = yHit.distance;
             workspace.Set(_wallChecker.position.x + (xDist * facingDirection), _ledgeChecker.position.y - yDist);
             return workspace;
         }
+
 
         //private void AnimationTrigger() => stateMachine.currentState.AnimationTrigger();
         //private void AnimationFinishTrigger() => stateMachine.currentState.AnimationFinishTrigger();

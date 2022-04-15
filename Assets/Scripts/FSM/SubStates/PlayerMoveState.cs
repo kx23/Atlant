@@ -32,10 +32,18 @@ namespace Atlant
             _characterController.CheckIfShoudFlip(_xInput);
             _characterController.SetVelocityX(_playerData.movementVelocity * _xInput);
 
-            if (_xInput == 0f&&!_isExitingState)
+
+            if(!_isExitingState) 
             {
-                _stateMachine.ChangeState(_characterController.idleState);
-            }
+                if (_xInput == 0f)
+                {
+                    _stateMachine.ChangeState(_characterController.idleState);
+                }
+                else if (_yInput == -1)
+                {
+                    _stateMachine.ChangeState(_characterController.crouchMoveState);
+                }
+            } 
         }
 
         public override void UpdatePhysics()

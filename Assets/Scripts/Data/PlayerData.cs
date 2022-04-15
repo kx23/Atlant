@@ -11,6 +11,7 @@ namespace Atlant
     {
         [Header("Move state")]
         public float movementVelocity = 10f;
+        public float standColliderHeight = 0.45f;
 
         [Header("Jump state")]
         public float jumpVelocity = 15f;
@@ -35,6 +36,10 @@ namespace Atlant
         public Vector2 startOffset;
         public Vector2 stopOffset;
 
+        [Header("Crouch State")]
+        public float crouchMovementVelocity = 5f;
+        public float crouchColliderHeight = 0.3f;
+        
         [Header("Dash State")]
         public float dashCooldown = 0.5f;
         public float maxHoldTime = 1f;
@@ -44,7 +49,6 @@ namespace Atlant
         public float drag = 10f;
         public float dashEndYMultiplier = 0.2f;
         public float distBetweenAfterImages = 0.1f;
-
 
         [Header("Check variables")]
         public float groundCheckRadius = 0.1f;
