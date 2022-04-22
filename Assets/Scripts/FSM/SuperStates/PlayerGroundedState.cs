@@ -57,7 +57,15 @@ namespace Atlant
             _grabInput= _characterController.inputHandler.grabInput;
             _dashInput= _characterController.inputHandler.dashInput;
 
-            if (_jumpInput && _characterController.jumpState.CanJump())
+            if (_characterController.inputHandler.AttackInputs[(int)CombatInputs.primary] && !_isTouchingCeiling)
+            {
+                _stateMachine.ChangeState(_characterController.primaryAttackState);
+            }
+            else if(_characterController.inputHandler.AttackInputs[(int)CombatInputs.secondary] && !_isTouchingCeiling)
+            {
+                _stateMachine.ChangeState(_characterController.secondaryAttackState);
+            }
+            else if (_jumpInput && _characterController.jumpState.CanJump())
             {
                 _stateMachine.ChangeState(_characterController.jumpState);
             }

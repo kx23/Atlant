@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 
 
@@ -21,6 +22,8 @@ namespace Atlant
         public bool dashInput { get; private set; }
         public bool dashInputStop { get; private set; }
 
+        public bool[] AttackInputs { get; private set; }
+
         [SerializeField]
         private float _inputHoldTime=0.2f;
         private float _jumpInputStartTime;
@@ -30,6 +33,8 @@ namespace Atlant
         private void Start()
         {
             _playerInput = GetComponent<PlayerInput>();
+            int count = Enum.GetValues(typeof(CombatInputs)).Length;
+            AttackInputs = new bool[count];
             _camera = Camera.main;
         }
 
@@ -38,26 +43,36 @@ namespace Atlant
             CheckJumpInputHoldTime();
             CheckDashInputHoldTime();
         }
+        public void OnPrimaryAttackInput(InputAction.CallbackContext context)
+        {
+            if (context.started)
+            {
+                AttackInputs[(int)CombatInputs.primary] = true;
+            }
+            if (context.canceled)
+            {
+                AttackInputs[(int)CombatInputs.primary] = false;
+            }
+        }        
+        public void OnSecondaryAttackInput(InputAction.CallbackContext context)
+        {
+            if (context.started)
+            {
+                AttackInputs[(int)CombatInputs.secondary] = true;
+            }
+            if (context.canceled)
+            {
+                AttackInputs[(int)CombatInputs.secondary] = false;
+            }
+        }
+
 
         public void OnMoveInput(InputAction.CallbackContext context)
         {
             rawMovementInput = context.ReadValue<Vector2>();
-            if (Mathf.Abs(rawMovementInput.x) > 0.5f)
-            {
-                normInputX = (int)(rawMovementInput * Vector2.right).normalized.x;
-            }
-            else
-            {
-                normInputX = 0;
-            }
-            if (Mathf.Abs(rawMovementInput.y) > 0.5f)
-            {
-                normInputY = (int)(rawMovementInput * Vector2.up).normalized.y;
-            }
-            else
-            {
-                normInputY = 0;
-            }
+            normInputX = Mathf.RoundToInt(rawMovementInput.x);
+            normInputY = Mathf.RoundToInt(rawMovementInput.y);
+
         }
 
         public void OnJumpInput(InputAction.CallbackContext context)
@@ -133,5 +148,11 @@ namespace Atlant
         }
 
 
+    }
+
+    public enum CombatInputs
+    {
+        primary,
+        secondary
     }
 }

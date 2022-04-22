@@ -21,6 +21,8 @@ namespace Atlant
         public PlayerDashState dashState { get; private set; }
         public PlayerCrouchIdleState crouchIdleState { get; private set; }
         public PlayerCrouchMoveState crouchMoveState { get; private set; }
+        public PlayerAttackState primaryAttackState { get; private set; }
+        public PlayerAttackState secondaryAttackState { get; private set; }
 
 
 
@@ -35,6 +37,7 @@ namespace Atlant
         public Transform dashDirectionIndicator { get; private set; }
         public PlayerAfterImagePool afterImagePool { get; private set; }
         public BoxCollider2D movementCollider { get; private set; }
+        public PlayerInventoryForTests inventoryForTests { get; private set; }
         #endregion
 
         #region Check Transform Variables
@@ -81,6 +84,9 @@ namespace Atlant
             crouchIdleState = new PlayerCrouchIdleState(this, stateMachine, _playerData, "crouchIdle");
             crouchMoveState = new PlayerCrouchMoveState(this, stateMachine, _playerData, "crouchMove");
 
+            primaryAttackState = new PlayerAttackState(this, stateMachine, _playerData, "attack");
+            secondaryAttackState = new PlayerAttackState(this, stateMachine, _playerData, "attack");
+
             rb = GetComponent<Rigidbody2D>();
             
         }
@@ -90,6 +96,11 @@ namespace Atlant
             stateMachine.Initialize(idleState);
             dashDirectionIndicator = transform.Find("DashDirectionIndicator");
             movementCollider = GetComponent<BoxCollider2D>();
+            inventoryForTests = GetComponent<PlayerInventoryForTests>();
+            primaryAttackState.SetWeapon(inventoryForTests.weapons[(int)CombatInputs.primary]);
+            //secondaryAttackState.SetWeapon(inventoryForTests.weapons[(int)CombatInputs.secondary]);
+
+
         }
 
         private void Update()

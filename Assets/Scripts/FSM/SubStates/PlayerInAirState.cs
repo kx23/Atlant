@@ -84,7 +84,16 @@ namespace Atlant
 
             CheckJumpMultiplayer();
 
-            if (_isGrounded && _characterController.currentVelocity.y < Mathf.Epsilon)
+
+            if (_characterController.inputHandler.AttackInputs[(int)CombatInputs.primary])
+            {
+                _stateMachine.ChangeState(_characterController.primaryAttackState);
+            }
+            else if (_characterController.inputHandler.AttackInputs[(int)CombatInputs.secondary])
+            {
+                _stateMachine.ChangeState(_characterController.secondaryAttackState);
+            }
+            else if (_isGrounded && _characterController.currentVelocity.y < Mathf.Epsilon)
             {
                 _stateMachine.ChangeState(_characterController.landState);
             }
