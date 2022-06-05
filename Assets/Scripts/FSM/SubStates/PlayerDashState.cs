@@ -26,7 +26,7 @@ namespace Atlant
             _characterController.inputHandler.UseDashUnput();
 
             _isHolding = true;
-            _dashDirection = Vector2.right * _characterController.facingDirection;
+            _dashDirection = Vector2.right * _characterController.core.movement.facingDirection;
 
             Time.timeScale = _playerData.holdTimeScale;
             startTime = Time.unscaledTime;
@@ -38,9 +38,9 @@ namespace Atlant
         {
             base.Exit();
 
-            if (_characterController.currentVelocity.y > 0)
+            if (_characterController.core.movement.currentVelocity.y > 0)
             {
-                _characterController.SetVelocityY(_characterController.currentVelocity.y * _playerData.dashEndYMultiplier);
+                _characterController.core.movement.SetVelocityY(_characterController.core.movement.currentVelocity.y * _playerData.dashEndYMultiplier);
             }
         }
 
@@ -50,8 +50,8 @@ namespace Atlant
 
             if (!_isExitingState)
             {
-                _characterController.animator.SetFloat("yVelocity", _characterController.currentVelocity.y);
-                _characterController.animator.SetFloat("xVelocity", Mathf.Abs(_characterController.currentVelocity.x));
+                _characterController.animator.SetFloat("yVelocity", _characterController.core.movement.currentVelocity.y);
+                _characterController.animator.SetFloat("xVelocity", Mathf.Abs(_characterController.core.movement.currentVelocity.x));
                 if (_isHolding)
                 {
                     _dashDirectionInput = _characterController.inputHandler.dashDirectionInput;
@@ -71,16 +71,16 @@ namespace Atlant
                         _isHolding = false;
                         Time.timeScale = 1f;
                         startTime = Time.time;
-                        _characterController.CheckIfShoudFlip(Mathf.RoundToInt(_dashDirection.x));
+                        _characterController.core.movement.CheckIfShoudFlip(Mathf.RoundToInt(_dashDirection.x));
                         _characterController.rb.drag = _playerData.drag;
-                        _characterController.SetVelocity(_playerData.dashVelocity, _dashDirection);
+                        _characterController.core.movement.SetVelocity(_playerData.dashVelocity, _dashDirection);
                         _characterController.dashDirectionIndicator.gameObject.SetActive(false);
                         PlaceAfterImage();
                     }
                 }
                 else
                 {
-                    _characterController.SetVelocity(_playerData.dashVelocity, _dashDirection);
+                    _characterController.core.movement.SetVelocity(_playerData.dashVelocity, _dashDirection);
                     CheckIfShoudPlaceAfterImage();
                     if (Time.time >= startTime + _playerData.dashTime)
                     {

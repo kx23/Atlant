@@ -17,7 +17,7 @@ namespace Atlant
             
             if (!_isExitingState)
             {
-                _characterController.SetVelocityY(_playerData.wallClimbVelocity);
+                _characterController.core.movement.SetVelocityY(_playerData.wallClimbVelocity);
                 if (_yInput != 1)
                 {
                     _stateMachine.ChangeState(_characterController.wallGrabState);

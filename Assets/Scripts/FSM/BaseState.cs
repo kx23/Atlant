@@ -4,6 +4,9 @@ namespace Atlant
 {
     public class BaseState
     {
+
+        protected Core _core;
+
         protected CharacterController _characterController;
         protected StateMachine _stateMachine;
         protected PlayerData _playerData;
@@ -27,6 +30,7 @@ namespace Atlant
             this._characterController = characterController;
             this._playerData = playerData;
             this._animBoolName = animBoolName;
+            _core = characterController.core;
 
         }
 

@@ -14,7 +14,7 @@ namespace Atlant
         {
             base.Enter();
 
-            _characterController.SetVelocityZero();
+            _characterController.core.movement.SetVelocityZero();
             _characterController.SetColliderHeight(_playerData.crouchColliderHeight);
         }
 

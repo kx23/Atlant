@@ -18,6 +18,7 @@ namespace Atlant
 
         private int _xInput;
         private int _yInput;
+        private Vector2 workspace;
 
         public PlayerLedgeClimbState(CharacterController characterController, StateMachine stateMachine, PlayerData playerData, string animBoolName) : base(characterController, stateMachine, playerData, animBoolName)
         {
@@ -38,12 +39,12 @@ namespace Atlant
         public override void Enter()
         {
             base.Enter();
-            _characterController.SetVelocityZero();
+            _characterController.core.movement.SetVelocityZero();
             _characterController.transform.position = _detectedPos;
-            _cornerPos = _characterController.DetermineCornerPosition();
+            _cornerPos = DetermineCornerPosition();
 
-            _startPos.Set(_cornerPos.x-(_characterController.facingDirection*_playerData.startOffset.x),_cornerPos.y-_playerData.startOffset.y);
-            _stopPos.Set(_cornerPos.x+(_characterController.facingDirection*_playerData.stopOffset.x),_cornerPos.y+_playerData.stopOffset.y);
+            _startPos.Set(_cornerPos.x-(_characterController.core.movement.facingDirection*_playerData.startOffset.x),_cornerPos.y-_playerData.startOffset.y);
+            _stopPos.Set(_cornerPos.x+(_characterController.core.movement.facingDirection*_playerData.stopOffset.x),_cornerPos.y+_playerData.stopOffset.y);
 
             _characterController.transform.position = _startPos;
         }
@@ -64,9 +65,23 @@ namespace Atlant
 
         private void CheckForSpace()
         {
-            _isTouchingCeiling = Physics2D.Raycast(_cornerPos+(Vector2.up*0.015f)+(Vector2.right*_characterController.facingDirection * 0.015f),Vector2.up,_playerData.standColliderHeight,_playerData.groundLayer);
+            _isTouchingCeiling = Physics2D.Raycast(_cornerPos+(Vector2.up*0.015f)+(Vector2.right*_characterController.core.movement.facingDirection * 0.015f),Vector2.up,_playerData.standColliderHeight,_core.collisionSenses.groundLayer);
             _characterController.animator.SetBool("isTouchingCeiling", _isTouchingCeiling);
         }
+
+        private Vector2 DetermineCornerPosition()
+        {
+            //исправить
+            RaycastHit2D xHit = Physics2D.Raycast(_core.collisionSenses.wallChecker.position, Vector2.right * _core.movement.facingDirection, _core.collisionSenses.wallCheckDistance, _core.collisionSenses.groundLayer);
+            float xDist = xHit.distance;
+            workspace.Set((xDist + 0.015f) * _core.movement.facingDirection, 0f);
+            RaycastHit2D yHit = Physics2D.Raycast(_core.collisionSenses.ledgeChecker.position + (Vector3)(workspace), Vector2.down, _core.collisionSenses.ledgeChecker.position.y - _core.collisionSenses.wallChecker.position.y + 0.015f, _core.collisionSenses.groundLayer);
+            float yDist = yHit.distance;
+            workspace.Set(_core.collisionSenses.wallChecker.position.x + (xDist * _core.movement.facingDirection), _core.collisionSenses.ledgeChecker.position.y - yDist);
+            return workspace;
+        }
+
+
 
         public override void UpdateLogic()
         {
@@ -91,10 +106,10 @@ namespace Atlant
                 _yInput = _characterController.inputHandler.normInputY;
                 _jumpInput = _characterController.inputHandler.jumpInput;
 
-                _characterController.SetVelocityZero();
+                _characterController.core.movement.SetVelocityZero();
                 _characterController.transform.position = _startPos;
 
-                if (_xInput == _characterController.facingDirection && _isHanging && !_isClimbing)
+                if (_xInput == _characterController.core.movement.facingDirection && _isHanging && !_isClimbing)
                 {
                     CheckForSpace();
                     //_characterController.animator.SetBool("isTouchingCeiling", _isTouchingCeiling);

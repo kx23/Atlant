@@ -29,8 +29,8 @@ namespace Atlant
             base.UpdateLogic();
             if (!_isExitingState)
             {
-                _characterController.SetVelocityX(_playerData.crouchMovementVelocity *_characterController.facingDirection);
-                _characterController.CheckIfShoudFlip(_xInput);
+                _characterController.core.movement.SetVelocityX(_playerData.crouchMovementVelocity *_characterController.core.movement.facingDirection);
+                _characterController.core.movement.CheckIfShoudFlip(_xInput);
 
 
                 if (_xInput == 0)

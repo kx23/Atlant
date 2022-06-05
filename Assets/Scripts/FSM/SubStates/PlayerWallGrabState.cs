@@ -64,8 +64,8 @@ namespace Atlant
         private void HoldPosition()
         {
             _characterController.transform.position = _holdPosition;
-            _characterController.SetVelocityX(0f);
-            _characterController.SetVelocityY(0f);
+            _characterController.core.movement.SetVelocityX(0f);
+            _characterController.core.movement.SetVelocityY(0f);
         }
         public override void UpdatePhysics()
         {

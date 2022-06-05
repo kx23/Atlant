@@ -32,9 +32,9 @@ namespace Atlant
         public override void DoChecks()
         {
             base.DoChecks();
-            _isGrounded = _characterController.CheckIfGrounded();
-            _isTouchingWall = _characterController.CheckIfTouchingWall();
-            _isTouchingLedge= _characterController.CheckIfTouchingLedge();
+            _isGrounded = _core.collisionSenses.ground;
+            _isTouchingWall = _core.collisionSenses.wallFront;
+            _isTouchingLedge= _core.collisionSenses.ledge;
 
             if (_isTouchingWall && !_isTouchingLedge)
             {
@@ -73,7 +73,7 @@ namespace Atlant
             {
                 _stateMachine.ChangeState(_characterController.idleState);
             }
-            else if (!_isTouchingWall || (_xInput != _characterController.facingDirection&&!_grabInput))
+            else if (!_isTouchingWall || (_xInput != _characterController.core.movement.facingDirection&&!_grabInput))
             {
                 _stateMachine.ChangeState(_characterController.inAirState);
             }

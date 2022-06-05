@@ -50,9 +50,5 @@ namespace Atlant
         public float dashEndYMultiplier = 0.2f;
         public float distBetweenAfterImages = 0.1f;
 
-        [Header("Check variables")]
-        public float groundCheckRadius = 0.1f;
-        public float wallCheckDistance = 0.5f;
-        public LayerMask groundLayer;
     }
 }

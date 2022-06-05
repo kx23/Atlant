@@ -42,11 +42,11 @@ namespace Atlant
 
             if (_shouldCheckFlip)
             {
-                _characterController.CheckIfShoudFlip(_xInput);
+                _characterController.core.movement.CheckIfShoudFlip(_xInput);
             }
             if (_setVelocity)
             {
-                _characterController.SetVelocityX(_velocityToSet * _characterController.facingDirection);
+                _characterController.core.movement.SetVelocityX(_velocityToSet * _characterController.core.movement.facingDirection);
             }
         }
         public void SetWeapon(Weapon weapon)
@@ -58,7 +58,7 @@ namespace Atlant
 
         public void SetPlayerVelocity(float velocity)
         {
-            _characterController.SetVelocityX(velocity * _characterController.facingDirection);
+            _characterController.core.movement.SetVelocityX(velocity * _characterController.core.movement.facingDirection);
             _velocityToSet = velocity;
             _setVelocity = true;
         }

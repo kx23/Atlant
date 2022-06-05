@@ -29,8 +29,8 @@ namespace Atlant
         public override void UpdateLogic()
         {
             base.UpdateLogic();
-            _characterController.CheckIfShoudFlip(_xInput);
-            _characterController.SetVelocityX(_playerData.movementVelocity * _xInput);
+            _characterController.core.movement.CheckIfShoudFlip(_xInput);
+            _characterController.core.movement.SetVelocityX(_playerData.movementVelocity * _xInput);
 
 
             if(!_isExitingState) 

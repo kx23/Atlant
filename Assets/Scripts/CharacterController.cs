@@ -31,6 +31,7 @@ namespace Atlant
         #endregion
 
         #region Components
+        public Core core { get; private set; }
         public Animator animator { get; private set; }
         public PlayerInputHandler inputHandler { get; private set; }
         public Rigidbody2D rb { get; private set; }
@@ -40,29 +41,17 @@ namespace Atlant
         public PlayerInventoryForTests inventoryForTests { get; private set; }
         #endregion
 
-        #region Check Transform Variables
-        [SerializeField]
-        private Transform _groundChecker;
-        [SerializeField]
-        private Transform _wallChecker;
-        [SerializeField]
-        private Transform _ledgeChecker;
-        [SerializeField]
-        private Transform _ceilingChecker;
 
-
-        #endregion
 
         #region Other Variables
-        public Vector2 currentVelocity { get; private set; }
-        public int facingDirection { get; private set; }
         private Vector2 workspace;
         #endregion
 
         #region Unity Callback Functions
         private void Awake()
         {
-            facingDirection = 1;
+            core = GetComponentInChildren<Core>();
+
             animator = GetComponentInChildren<Animator>();
             inputHandler = GetComponent<PlayerInputHandler>();
             stateMachine = new StateMachine();
@@ -105,7 +94,7 @@ namespace Atlant
 
         private void Update()
         {
-            currentVelocity = rb.velocity;
+            core.LogicUpdate();
             stateMachine.currentState.UpdateLogic();
         }
 
@@ -116,79 +105,9 @@ namespace Atlant
         }
         #endregion
 
-        #region Set Functions
-        public void SetVelocityZero()
-        {
-            rb.velocity = Vector2.zero;
-            currentVelocity = Vector2.zero;
-        }
+        
 
-        public void SetVelocity(float velocity, Vector2 angle, int direction)
-        {
-            angle.Normalize();
-            workspace.Set(angle.x * velocity * direction, angle.y * velocity);
-            rb.velocity = workspace;
-            currentVelocity = workspace;
-        }        
-        public void SetVelocity(float velocity, Vector2 direction)
-        {
-            workspace = direction * velocity;
-            rb.velocity = workspace;
-            currentVelocity = workspace;
-        }
-
-        public void SetVelocityX(float velocity)
-        {
-            workspace.Set(velocity, currentVelocity.y);
-            rb.velocity = workspace;
-            currentVelocity = workspace;
-        }
-
-        public void SetVelocityY(float velocity)
-        {
-            workspace.Set(currentVelocity.x,velocity);
-            rb.velocity = workspace;
-            currentVelocity = workspace;
-        }
-        #endregion
-
-        #region Check Functions
-        public void CheckIfShoudFlip(int xInput)
-        {
-            if (xInput != 0 && xInput != facingDirection)
-            {
-                Flip();
-            }
-        }
-
-        public bool CheckForCeiling()
-        {
-            //Debug.DrawLine(_groundChecker.position, _groundChecker.position+ (Vector3.down*_playerData.groundCheckRadius),Color.red, 1f);
-            return Physics2D.OverlapCircle(_ceilingChecker.position, _playerData.groundCheckRadius, _playerData.groundLayer);
-        }
-
-        public bool CheckIfGrounded()
-        {
-            //Debug.DrawLine(_groundChecker.position, _groundChecker.position+ (Vector3.down*_playerData.groundCheckRadius),Color.red, 1f);
-            return Physics2D.OverlapCircle(_groundChecker.position, _playerData.groundCheckRadius, _playerData.groundLayer);
-        }
-
-        public bool CheckIfTouchingWall()
-        {
-            return Physics2D.Raycast(_wallChecker.position, Vector2.right * facingDirection, _playerData.wallCheckDistance, _playerData.groundLayer);
-        }
-
-        public bool CheckIfTouchingLedge()
-        {
-            return Physics2D.Raycast(_ledgeChecker.position, Vector2.right * facingDirection, _playerData.wallCheckDistance, _playerData.groundLayer);
-        }
-
-        public bool CheckIfTouchingWallBack()
-        {
-            return Physics2D.Raycast(_wallChecker.position, Vector2.right * -facingDirection, _playerData.wallCheckDistance, _playerData.groundLayer);
-        }
-
-        #endregion
+        
 
         #region Other Functions
 
@@ -202,22 +121,7 @@ namespace Atlant
             movementCollider.size = workspace;
             movementCollider.offset = center;
         }
-        private void Flip()
-        {
-            facingDirection *= -1;
-            transform.Rotate(0.0f, 180f, 0f);
-        }
-        public Vector2 DetermineCornerPosition()
-        {
-            //исправить
-            RaycastHit2D xHit = Physics2D.Raycast(_wallChecker.position, Vector2.right * facingDirection, _playerData.wallCheckDistance, _playerData.groundLayer);
-            float xDist = xHit.distance;
-            workspace.Set((xDist+0.015f) * facingDirection, 0f);
-            RaycastHit2D yHit = Physics2D.Raycast(_ledgeChecker.position+(Vector3)(workspace), Vector2.down, _ledgeChecker.position.y-_wallChecker.position.y+0.015f, _playerData.groundLayer);
-            float yDist = yHit.distance;
-            workspace.Set(_wallChecker.position.x + (xDist * facingDirection), _ledgeChecker.position.y - yDist);
-            return workspace;
-        }
+
 
 
         //private void AnimationTrigger() => stateMachine.currentState.AnimationTrigger();

@@ -28,10 +28,10 @@ namespace Atlant
         {
             base.DoChecks();
 
-            _isTouchingCeiling = _characterController.CheckForCeiling();
-            _isGrounded = _characterController.CheckIfGrounded();
-            _isTouchingWall = _characterController.CheckIfTouchingWall();
-            _isTouchingLedge = _characterController.CheckIfTouchingLedge();
+            _isTouchingCeiling = _core.collisionSenses.ceiling;
+            _isGrounded = _core.collisionSenses.ground;
+            _isTouchingWall = _core.collisionSenses.wallFront;
+            _isTouchingLedge = _core.collisionSenses.ledge;
         }
 
         public override void Enter()

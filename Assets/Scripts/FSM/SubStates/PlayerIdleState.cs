@@ -19,7 +19,7 @@ namespace Atlant
         public override void Enter()
         {
             base.Enter();
-            _characterController.SetVelocityX(0f);
+            _characterController.core.movement.SetVelocityX(0f);
         }
 
         public override void Exit()

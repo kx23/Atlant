@@ -15,7 +15,7 @@ namespace Atlant
             base.UpdateLogic();
             if (!_isExitingState)
             {
-                _characterController.SetVelocityY(-_playerData.wallSlideVelocity);
+                _characterController.core.movement.SetVelocityY(-_playerData.wallSlideVelocity);
 
                 if (_grabInput && _yInput == 0)
                 {

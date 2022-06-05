@@ -17,7 +17,7 @@ namespace Atlant
         {
             base.DoChecks();
 
-            _isGrounded = _characterController.CheckIfGrounded();
+            _isGrounded = _core.collisionSenses.ground;
         }
 
         public override void Enter()
@@ -37,7 +37,7 @@ namespace Atlant
 
             if (_isAbilityDone)
             {
-                if (_isGrounded && _characterController.currentVelocity.y < Mathf.Epsilon)
+                if (_isGrounded && _characterController.core.movement.currentVelocity.y < Mathf.Epsilon)
                 {
                     _stateMachine.ChangeState(_characterController.idleState);
                 }

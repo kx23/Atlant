@@ -17,7 +17,7 @@ namespace Atlant
         {
             base.Enter();
             _characterController.inputHandler.UseJumpUnput();
-            _characterController.SetVelocityY(_playerData.jumpVelocity);
+            _characterController.core.movement.SetVelocityY(_playerData.jumpVelocity);
             _isAbilityDone = true;
             //DecreaseAmountOfJumpsLeft();
             _amountOfJumpsLeft--;
